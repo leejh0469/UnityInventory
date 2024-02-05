@@ -11,6 +11,8 @@ public class Item
 
 public class Inventory : MonoBehaviour
 {
+    public static Inventory instance;
+
     private Item[] items;
 
     [SerializeField] private GameObject slotsParent;
@@ -22,9 +24,17 @@ public class Inventory : MonoBehaviour
     private int selecetedSlotIndex;
     private Item selectedSlotItem;
 
+    public ItemData[] item;
+
+    [SerializeField] private GameObject _inventoryUI;
+
+    private PlayerEquip _playerEquip;
+
     private void Awake()
     {
         slots = slotsParent.GetComponentsInChildren<SlotUI>();
+        _playerEquip = GetComponent<PlayerEquip>();
+        instance = this;
     }
 
     private void Start()
@@ -37,11 +47,27 @@ public class Inventory : MonoBehaviour
             slots[i].SetIndex(i);
             slots[i].Clear();
         }
+
+        for (int i = 0;i < item.Length; i++)
+        {
+            AddItem(item[i]);
+        }
+
+        _inventoryUI.SetActive(false);
     }
 
     public void UpdateSlot(int index)
     {
-        slots[index].UpdateSlot(items[index]);
+        if (items[index].itemData != null)
+            slots[index].UpdateSlot(items[index]);
+    }
+
+    public void UpdateAllSlot()
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            UpdateSlot(i);
+        }
     }
 
     public void SelectItem(int index)
@@ -49,10 +75,13 @@ public class Inventory : MonoBehaviour
         selecetedSlotIndex = index;
         selectedSlotItem = items[selecetedSlotIndex];
 
-        if(selectedSlotItem.equip)
-            equipPopupUI.SetActive(true);
-        else
-            unEquipPopupUI.SetActive(true);
+        if(selectedSlotItem.itemData.type == ItemType.Equipable)
+        {
+            if(!selectedSlotItem.equip)
+                equipPopupUI.SetActive(true);
+            else
+                unEquipPopupUI.SetActive(true);
+        }
     }
 
     public void AddItem(ItemData item)
@@ -80,5 +109,51 @@ public class Inventory : MonoBehaviour
         }
 
         return -1;
+    }
+
+    public void OnEquipButtonClick()
+    {
+        if(selectedSlotItem.itemData.equipType == EquipType.Weapon)
+        {
+            Item curEquipWeapon = _playerEquip.IsEquipWeapon();
+
+            if(curEquipWeapon != null)
+            {
+                curEquipWeapon.equip = false;
+            }
+
+            selectedSlotItem.equip = true;
+            _playerEquip.EquipWeapon(selectedSlotItem);
+        }
+        else if(selectedSlotItem.itemData.equipType == EquipType.Armor)
+        {
+            Item curEquipArmor = _playerEquip.IsEquipArmor();
+
+            if (curEquipArmor != null)
+            {
+                curEquipArmor.equip = false;
+            }
+
+            selectedSlotItem.equip = true;
+            _playerEquip.EquipArmor(selectedSlotItem);
+        }
+
+        UpdateAllSlot();
+    }
+
+    public void OnUnEquipButtonClick()
+    {
+        if (selectedSlotItem.itemData.equipType == EquipType.Weapon)
+        {
+            _playerEquip.UnEquipWeapon();
+            selectedSlotItem.equip = false;
+        }
+        else if(selectedSlotItem.itemData.equipType == EquipType.Armor)
+        {
+            _playerEquip.UnEquipArmor();
+            selectedSlotItem.equip = false;
+        }
+
+        UpdateAllSlot();
     }
 }

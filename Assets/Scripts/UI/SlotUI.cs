@@ -35,5 +35,12 @@ public class SlotUI : MonoBehaviour
 
         if (item.equip)
             _equipText.SetActive(true);
+        else
+            _equipText.SetActive(false);
+    }
+
+    public void OnButtonClick()
+    {
+        Inventory.instance.SelectItem(index);
     }
 }
