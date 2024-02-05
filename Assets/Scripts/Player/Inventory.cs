@@ -115,26 +115,20 @@ public class Inventory : MonoBehaviour
     {
         if(selectedSlotItem.itemData.equipType == EquipType.Weapon)
         {
-            Item curEquipWeapon = _playerEquip.IsEquipWeapon();
-
-            if(curEquipWeapon != null)
+            if(_playerEquip.IsEquipWeapon())
             {
-                curEquipWeapon.equip = false;
+                _playerEquip.UnEquipWeapon();
             }
 
-            selectedSlotItem.equip = true;
             _playerEquip.EquipWeapon(selectedSlotItem);
         }
         else if(selectedSlotItem.itemData.equipType == EquipType.Armor)
         {
-            Item curEquipArmor = _playerEquip.IsEquipArmor();
-
-            if (curEquipArmor != null)
+            if (_playerEquip.IsEquipArmor())
             {
-                curEquipArmor.equip = false;
+                _playerEquip.UnEquipArmor();
             }
 
-            selectedSlotItem.equip = true;
             _playerEquip.EquipArmor(selectedSlotItem);
         }
 
