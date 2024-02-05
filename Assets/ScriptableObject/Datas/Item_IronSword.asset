@@ -20,3 +20,4 @@ MonoBehaviour:
   attackValue: 20
   defenceValue: 0
   consumable: []
+  price: 10000

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class SlotUI : MonoBehaviour
     [SerializeField] private GameObject _equipText;
 
     private GameObject _iconGO;
+
+    public Action<int> OnButtonClickAction;
 
     private void Awake()
     {
@@ -39,8 +42,14 @@ public class SlotUI : MonoBehaviour
             _equipText.SetActive(false);
     }
 
+    public void UpdateSlot(ItemData item)
+    {
+        _iconGO?.SetActive(true);
+        icon.sprite = item.icon;
+    }
+
     public void OnButtonClick()
     {
-        Inventory.instance.SelectItem(index);
+        OnButtonClickAction?.Invoke(index);
     }
 }

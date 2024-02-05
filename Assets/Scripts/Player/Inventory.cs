@@ -46,6 +46,7 @@ public class Inventory : MonoBehaviour
             items[i] = new Item();
             slots[i].SetIndex(i);
             slots[i].Clear();
+            slots[i].OnButtonClickAction += OnSlotButtonClick;
         }
 
         for (int i = 0;i < item.Length; i++)
@@ -74,6 +75,9 @@ public class Inventory : MonoBehaviour
     {
         selecetedSlotIndex = index;
         selectedSlotItem = items[selecetedSlotIndex];
+
+        if (!HasItem(selecetedSlotIndex))
+            return;
 
         if(selectedSlotItem.itemData.type == ItemType.Equipable)
         {
@@ -149,5 +153,15 @@ public class Inventory : MonoBehaviour
         }
 
         UpdateAllSlot();
+    }
+
+    private void OnSlotButtonClick(int index)
+    {
+        SelectItem(index);
+    }
+
+    private bool HasItem(int index)
+    {
+        return items[index].itemData != null;
     }
 }

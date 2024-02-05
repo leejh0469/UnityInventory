@@ -44,4 +44,7 @@ public class ItemData : ScriptableObject
 
     [Header("Consume")]
     public ItemDataConsumable[] consumable;
+
+    [Header("Sell")]
+    public int price;
 }
