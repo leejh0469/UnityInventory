@@ -33,8 +33,16 @@ public class SlotUI : MonoBehaviour
 
     public void UpdateSlot(Item item)
     {
-        _iconGO?.SetActive(true);
-        icon.sprite = item.itemData.icon;
+        if (item.itemData != null)
+        {
+            _iconGO?.SetActive(true);
+            icon.sprite = item.itemData.icon;
+        }
+        else
+        {
+            _iconGO?.SetActive(false);
+        }
+        
 
         if (item.equip)
             _equipText.SetActive(true);

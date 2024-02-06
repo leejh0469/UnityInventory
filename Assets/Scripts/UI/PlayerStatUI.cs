@@ -63,6 +63,6 @@ public class PlayerStatUI : MonoBehaviour
 
     public void SetExpBar(int curExp, int levelUpValue)
     {
-        expBar.fillAmount = curExp / levelUpValue;
+        expBar.fillAmount = curExp / (float)levelUpValue;
     }
 }

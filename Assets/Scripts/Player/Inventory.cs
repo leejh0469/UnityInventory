@@ -20,6 +20,7 @@ public class Inventory : MonoBehaviour
 
     [SerializeField] private GameObject equipPopupUI;
     [SerializeField] private GameObject unEquipPopupUI;
+    [SerializeField] private GameObject usePopupUI;
 
     private int selecetedSlotIndex;
     private Item selectedSlotItem;
@@ -29,11 +30,13 @@ public class Inventory : MonoBehaviour
     [SerializeField] private GameObject _inventoryUI;
 
     private PlayerEquip _playerEquip;
+    private PlayerStat _playerStat;
 
     private void Awake()
     {
         slots = slotsParent.GetComponentsInChildren<SlotUI>();
         _playerEquip = GetComponent<PlayerEquip>();
+        _playerStat = GetComponent<PlayerStat>();
         instance = this;
     }
 
@@ -59,8 +62,7 @@ public class Inventory : MonoBehaviour
 
     public void UpdateSlot(int index)
     {
-        if (items[index].itemData != null)
-            slots[index].UpdateSlot(items[index]);
+        slots[index].UpdateSlot(items[index]);
     }
 
     public void UpdateAllSlot()
@@ -76,8 +78,12 @@ public class Inventory : MonoBehaviour
         selecetedSlotIndex = index;
         selectedSlotItem = items[selecetedSlotIndex];
 
+        Debug.Log(selecetedSlotIndex);
+
         if (!HasItem(selecetedSlotIndex))
             return;
+
+        Debug.Log(1);
 
         if(selectedSlotItem.itemData.type == ItemType.Equipable)
         {
@@ -85,6 +91,10 @@ public class Inventory : MonoBehaviour
                 equipPopupUI.SetActive(true);
             else
                 unEquipPopupUI.SetActive(true);
+        }
+        else if(selectedSlotItem.itemData.type == ItemType.Consumable)
+        {
+            usePopupUI.SetActive(true);
         }
     }
 
@@ -113,6 +123,27 @@ public class Inventory : MonoBehaviour
         }
 
         return -1;
+    }
+
+    private void RemoveSelectedItem()
+    {
+        if (selectedSlotItem.equip)
+        {
+            if (selectedSlotItem.itemData.equipType == EquipType.Weapon)
+            {
+                _playerEquip.UnEquipWeapon();
+                selectedSlotItem.equip = false;
+            }
+            else if (selectedSlotItem.itemData.equipType == EquipType.Armor)
+            {
+                _playerEquip.UnEquipArmor();
+                selectedSlotItem.equip = false;
+            }
+        }
+
+        selectedSlotItem.itemData = null;
+
+        UpdateSlot(selecetedSlotIndex);
     }
 
     public void OnEquipButtonClick()
@@ -153,6 +184,23 @@ public class Inventory : MonoBehaviour
         }
 
         UpdateAllSlot();
+    }
+
+    public void OnUseButtonClick()
+    {
+        for(int i = 0; i < selectedSlotItem.itemData.consumable.Length; i++)
+        {
+            switch(selectedSlotItem.itemData.consumable[i].type)
+            {
+                case ConsumableType.EXP:
+                    _playerStat.AddExpValue((int)selectedSlotItem.itemData.consumable[i].value);
+                    break;
+                case ConsumableType.Health:
+                    break;
+            }
+        }
+
+        RemoveSelectedItem();
     }
 
     private void OnSlotButtonClick(int index)

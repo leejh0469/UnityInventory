@@ -79,4 +79,15 @@ public class PlayerStat : MonoBehaviour
         Gold -= value;
         _playerStatUI.SetPlayerGold(Gold);
     }
+
+    public void AddExpValue(int value)
+    {
+        Exp += value;
+        if(Exp >= RequireForLevelUp) { 
+            Exp -= RequireForLevelUp;
+            Level++;
+        }
+        _playerStatUI.SetExpBar(Exp, RequireForLevelUp);
+        _playerStatUI.SetPlayerLevel(Level);
+    }
 }

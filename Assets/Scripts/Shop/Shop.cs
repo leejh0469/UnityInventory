@@ -78,6 +78,10 @@ public class Shop : MonoBehaviour
 
     public void Buy()
     {
+        if(selectedSlotItem == null)
+        {
+            return;
+        }
         if(_playerStat.Gold >= selectedSlotItem.itemData.price)
         {
             _playerStat.SubtractGoldValue(selectedSlotItem.itemData.price);
