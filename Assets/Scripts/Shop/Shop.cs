@@ -24,6 +24,8 @@ public class Shop : MonoBehaviour
 
     [SerializeField] private GameObject _shop;
     [SerializeField] private ShopUI _shopUI;
+    [SerializeField] private PlayerStat _playerStat;
+
 
     private void Awake()
     {
@@ -72,5 +74,17 @@ public class Shop : MonoBehaviour
     private void OnSlotButtonClick(int index)
     {
         SelectItem(index);
+    }
+
+    public void Buy()
+    {
+        if(_playerStat.Gold >= selectedSlotItem.itemData.price)
+        {
+            _playerStat.SubtractGoldValue(selectedSlotItem.itemData.price);
+            Inventory.instance.AddItem(selectedSlotItem.itemData);
+
+            selectedSlotItem.isSelled = true;
+            _shopUI.UpdateSellInfoUI(selectedSlotItem);
+        }
     }
 }

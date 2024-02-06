@@ -73,4 +73,10 @@ public class PlayerStat : MonoBehaviour
         Defence -= value;
         _playerStatUI.SetPlayerStat(Attack, Defence, Health);
     }
+
+    public void SubtractGoldValue(int value)
+    {
+        Gold -= value;
+        _playerStatUI.SetPlayerGold(Gold);
+    }
 }
